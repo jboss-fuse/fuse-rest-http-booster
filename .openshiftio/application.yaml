@@ -1,0 +1,224 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: launchpad-builder-fuse-rest-http-booster
+  annotations:
+    description: This template creates a Build Configuration using an S2I builder.
+    tags: instant-app
+parameters:
+- name: SOURCE_REPOSITORY_URL
+  description: The source URL for the application
+  displayName: Source URL
+  required: true
+- name: SOURCE_REPOSITORY_REF
+  description: The branch name for the application
+  displayName: Source Branch
+  value: master
+  required: true
+- name: SOURCE_REPOSITORY_DIR
+  description: The location within the source repo of the application
+  displayName: Source Directory
+  value: .
+  required: true
+- name: ARTIFACT_COPY_ARGS
+  description: Syntax to be used to copy uberjar files to the target directory
+  displayName: Copy Args
+  value: '*-exec.jar'
+  required: true
+- name: GITHUB_WEBHOOK_SECRET
+  description: A secret string used to configure the GitHub webhook.
+  displayName: GitHub Webhook Secret
+  required: true
+  from: '[a-zA-Z0-9]{40}'
+  generate: expression
+- name: MAVEN_MIRROR_URL
+  description: Maven Nexus Repository to be used during build phase
+  displayName:
+  required: false
+objects:
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: fis-java-openshift
+  spec:
+    tags:
+    - name: "1.0"
+      annotations:
+        description: JBoss Fuse Integration Services 1.0 Java S2I images.
+        iconClass: icon-jboss
+        supports: 'jboss-fuse:6.2.1,java:8,xpaas:1.2'
+        tags: 'builder,jboss-fuse,java,xpaas,hidden'
+        version: '1.0'
+      from:
+        kind: DockerImage
+        name: 'registry.access.redhat.com/jboss-fuse-6/fis-java-openshift:1.0'
+    - name: "2.0"
+      annotations:
+        description: JBoss Fuse Integration Services 2.0 Java S2I images.
+        iconClass: icon-jboss
+        supports: 'jboss-fuse:6.3.0,java:8,xpaas:1.2'
+        tags: 'builder,jboss-fuse,java,xpaas'
+        version: '2.0'
+      from:
+        kind: DockerImage
+        name: 'registry.access.redhat.com/jboss-fuse-6/fis-java-openshift:2.0'
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: fuse-rest-http-booster
+  spec: {}
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    name: fuse-rest-http-booster
+    labels:
+      app: fuse-rest-http-booster
+      group: com.redhat.fuse.boosters
+      provider: fabric8
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: fuse-rest-http-booster:latest
+    postCommit: {}
+    resources: {}
+    runPolicy: Serial
+    source:
+      git:
+        uri: ${SOURCE_REPOSITORY_URL}
+        ref: ${SOURCE_REPOSITORY_REF}
+        #contextDir: ${SOURCE_REPOSITORY_DIR}
+      type: Git
+    strategy:
+      sourceStrategy:
+        env:
+          - name: BUILD_LOGLEVEL
+            value: '5'
+          - name: MAVEN_ARGS_APPEND
+            value: "-pl ${SOURCE_REPOSITORY_DIR}"
+          - name: ARTIFACT_DIR
+            value: "${SOURCE_REPOSITORY_DIR}/target"
+          - name: MAVEN_MIRROR_URL
+            value: "${MAVEN_MIRROR_URL}"
+          - name: ARTIFACT_COPY_ARGS
+            value: "${ARTIFACT_COPY_ARGS}"
+        forcePull: true
+        from:
+          kind: ImageStreamTag
+          name: fis-java-openshift:2.0
+        incremental: true
+      type: Source
+    triggers:
+    - github:
+        secret: ${GITHUB_WEBHOOK_SECRET}
+      type: GitHub
+    - type: ConfigChange
+    - imageChange: {}
+      type: ImageChange
+  status:
+    lastVersion: 0
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      prometheus.io/port: "9779"
+      prometheus.io/scrape: "true"
+    labels:
+      expose: "true"
+      app: fuse-rest-http-booster
+      provider: fabric8
+      group: com.redhat.fuse.boosters
+    name: fuse-rest-http-booster
+  spec:
+    ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: fuse-rest-http-booster
+      provider: fabric8
+      group: com.redhat.fuse.boosters
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      app: fuse-rest-http-booster
+      provider: fabric8
+      group: com.redhat.fuse.boosters
+    name: fuse-rest-http-booster
+  spec:
+    replicas: 1
+    revisionHistoryLimit: 2
+    selector:
+      app: fuse-rest-http-booster
+      provider: fabric8
+      group: com.redhat.fuse.boosters
+    strategy:
+      rollingParams:
+        timeoutSeconds: 3600
+      type: Rolling
+    template:
+      metadata:
+        labels:
+          app: fuse-rest-http-booster
+          provider: fabric8
+          group: com.redhat.fuse.boosters
+      spec:
+        containers:
+        - env:
+          - name: KUBERNETES_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          image: fuse-rest-http-booster:latest
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 180
+          name: fuse-rest-http-booster
+          ports:
+          - containerPort: 8080
+            name: http
+            protocol: TCP
+          - containerPort: 9779
+            name: prometheus
+            protocol: TCP
+          - containerPort: 8778
+            name: jolokia
+            protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 10
+          securityContext:
+            privileged: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - fuse-rest-http-booster
+        from:
+          kind: ImageStreamTag
+          name: fuse-rest-http-booster:latest
+      type: ImageChange
+- apiVersion: v1
+  kind: Route
+  metadata:
+    labels:
+      app: fuse-rest-http-booster
+      provider: fabric8
+      group: com.redhat.fuse.boosters
+    name: fuse-rest-http-booster
+  spec:
+    port:
+      targetPort: 8080
+    to:
+      kind: Service
+      name: fuse-rest-http-booster
