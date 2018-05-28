@@ -100,7 +100,7 @@ objects:
         forcePull: true
         from:
           kind: ImageStreamTag
-          name: fuse-java-openshift:latest
+          name: fuse-java-openshift:1.0
         incremental: true
       type: Source
     triggers:
