@@ -9,7 +9,7 @@ Creating an HTTP endpoint using REST and its underlying principles to define you
 
 This booster introduces the mechanics of interacting with a remote (exposed by <strong>Apache Camel</strong>) service using the HTTP protocol. It allows you to:
 
-* Execute an HTTP GET request on `api/greetings/{name}`` endpoint; using the url parameter `{name}` and producing a response in JSON format with a payload of Hello, $name! with $name replaced by the value of the url parameter used into the request.
+* Execute an HTTP GET request on `camel/greetings/{name}`` endpoint; using the url parameter `{name}` and producing a response in JSON format with a payload of Hello, $name! with $name replaced by the value of the url parameter used into the request.
 * Browse the api's Swagger page.
                 
 == Deployment options
