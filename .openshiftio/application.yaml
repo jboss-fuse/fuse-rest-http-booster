@@ -49,9 +49,8 @@ objects:
     tags:
     - name: "1.0"
       annotations:
-        description: JBoss Fuse Integration Services 1.0 Java S2I images.
+        description: Red Hat Fuse 7.0 Java S2I images.
         iconClass: icon-jboss
-        supports: 'jboss-fuse:6.2.1,java:8,xpaas:1.2'
         tags: 'builder,jboss-fuse,java,xpaas,hidden'
         version: '1.0'
       from:
