@@ -51,7 +51,6 @@ objects:
       annotations:
         description: Fabric8 Java S2I images.
         iconClass: icon-jboss
-        supports: 'jboss-fuse:7,java:8,xpaas:1.2'
         tags: 'builder,jboss-fuse,java,xpaas,hidden'
         version: '1.0'
       from:
