@@ -14,8 +14,4 @@ public class IndexRootMapper extends WebMvcConfigurerAdapter {
         registry.addViewController("/").setViewName("forward:/rest-http-index.html");
     }
 
-    // @Override
-    // public void addViewControllers(ViewControllerRegistry registry) {
-    //     registry.addViewController("/").setStatusCode(HttpStatus.PERMANENT_REDIRECT).setViewName("redirect:/webjars/swagger-ui/index.html?url=/camel/api-doc&validatorUrl=");
-    // }
 }
