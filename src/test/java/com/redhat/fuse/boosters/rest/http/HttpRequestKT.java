@@ -37,7 +37,7 @@ public class HttpRequestKT {
     OpenShiftClient client;
 
     @Test
-    public void test_at_least_one_pod() throws Exception {
+    public void templateTest() throws Exception {
         File template = new File(".openshiftio/application.yaml");
         assertTrue(template.exists());
         HashMap<String,String> templateParameters = new HashMap<String,String>(){
