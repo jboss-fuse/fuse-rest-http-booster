@@ -16,8 +16,8 @@
 
 package com.redhat.fuse.boosters.rest.http;
 
-import io.fabric8.kubernetes.api.model.v2_6.HasMetadata;
-import io.fabric8.openshift.clnt.v2_6.OpenShiftClient;
+import io.fabric8.kubernetes.api.model.HasMetadata;
+import io.fabric8.openshift.client.OpenShiftClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.junit.Test;
