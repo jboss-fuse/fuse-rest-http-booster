@@ -140,15 +140,6 @@
     </dependencies>
 
     <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>io.fabric8</groupId>
-                    <artifactId>fabric8-maven-plugin</artifactId>
-                    <version>${fmp.version}</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
         <plugins>
             <!-- Core plugins -->
             <plugin>
@@ -243,6 +234,7 @@
                     <plugin>
                         <groupId>io.fabric8</groupId>
                         <artifactId>fabric8-maven-plugin</artifactId>
+                        <version>${fmp.version}</version>
                         <executions>
                             <execution>
                                 <goals>
