@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class CamelRouter extends RouteBuilder {
 
-
     @Override
     public void configure() throws Exception {
 
@@ -24,12 +23,11 @@ public class CamelRouter extends RouteBuilder {
                 .apiProperty("base.path", "camel/")
                 .apiProperty("api.path", "/")
                 .apiProperty("host", "")
-//                .apiProperty("schemes", "")
                 .apiContextRouteId("doc-api")
             .component("servlet")
             .bindingMode(RestBindingMode.json);
         
-        rest("/greetings/").description("Greeting to {name}")
+        rest("/greetings").description("Greeting to {name}")
             .get("/{name}").outType(Greetings.class)
                 .route().routeId("greeting-api")
                 .to("direct:greetingsImpl");
