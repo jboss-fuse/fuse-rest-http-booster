@@ -30,20 +30,6 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>org.jboss.redhat-fuse</groupId>
-                <artifactId>fabric8-maven-plugin</artifactId>
-                <version>${fuse.bom.version}</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss.redhat-fuse</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${fuse.bom.version}</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
-            <dependency>
                 <groupId>org.arquillian.cube</groupId>
                 <artifactId>arquillian-cube-bom</artifactId>
                 <version>${arquillian.cube.version}</version>
@@ -121,7 +107,6 @@
         <dependency>
             <groupId>io.fabric8</groupId>
             <artifactId>openshift-client</artifactId>
-            <!-- <version>${openshift.client.version}</version> -->
             <scope>test</scope>
         </dependency>
         <dependency>
