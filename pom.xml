@@ -166,9 +166,9 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-boot.version}</version>
-                <!--configuration>
+                <configuration>
                     <classifier>exec</classifier>
-                </configuration-->
+                </configuration>
                 <executions>
                     <execution>
                         <goals>
@@ -177,13 +177,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <configuration>
-                    <classesDirectory>${project.build.directory}/${project.build.finalName}.${project.packaging}.original</classesDirectory>
-                </configuration>
-          </plugin>
         </plugins>
     </build>
 
