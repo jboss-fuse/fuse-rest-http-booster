@@ -22,6 +22,7 @@
         <!-- version of Arquillian -->
         <arquillian.cube.version>1.17.1</arquillian.cube.version>
         <arquillian.version>1.4.0.Final</arquillian.version>
+        <openshift-client.version>4.0.7</openshift-client.version>
     </properties>
 
     <dependencyManagement>
@@ -136,6 +137,11 @@
             <artifactId>arquillian-junit-standalone</artifactId>
             <version>${arquillian.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.fabric8</groupId>
+            <artifactId>openshift-client</artifactId>
+            <version>${openshift-client.version}</version>
         </dependency>
     </dependencies>
 

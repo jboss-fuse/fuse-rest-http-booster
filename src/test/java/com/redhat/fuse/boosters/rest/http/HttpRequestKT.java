@@ -16,8 +16,9 @@
 
 package com.redhat.fuse.boosters.rest.http;
 
-import io.fabric8.kubernetes.api.model.v4_0.HasMetadata;
-import io.fabric8.openshift.clnt.v4_0.OpenShiftClient;
+
+import io.fabric8.kubernetes.api.model.HasMetadata;
+import io.fabric8.openshift.client.OpenShiftClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.junit.Test;
@@ -37,7 +38,7 @@ public class HttpRequestKT {
     OpenShiftClient client;
 
     @Test
-    public void templateTest() throws Exception {
+    public void templateTest() {
         File template = new File(".openshiftio/application.yaml");
         assertTrue(template.exists());
         HashMap<String,String> templateParameters = new HashMap<String,String>(){
