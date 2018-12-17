@@ -17,19 +17,21 @@
 package com.redhat.fuse.boosters.rest.http;
 
 
-import io.fabric8.kubernetes.api.model.HasMetadata;
-import io.fabric8.openshift.client.OpenShiftClient;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import io.fabric8.kubernetes.api.model.HasMetadata;
+import io.fabric8.openshift.client.OpenShiftClient;
 
 @RunWith(Arquillian.class)
 public class HttpRequestKT {
@@ -41,9 +43,7 @@ public class HttpRequestKT {
     public void templateTest() {
         File template = new File(".openshiftio/application.yaml");
         assertTrue(template.exists());
-        HashMap<String,String> templateParameters = new HashMap<String,String>(){
-            {put("SOURCE_REPOSITORY_URL","https://github.com/jboss-fuse/fuse-rest-http-booster");}
-        };
+        Map<String, String> templateParameters = Collections.singletonMap("SOURCE_REPOSITORY_URL","https://github.com/jboss-fuse/fuse-rest-http-booster");
         List<HasMetadata> resources = client.templates().load(template).process(templateParameters).getItems();
 
         for(HasMetadata res : resources){
