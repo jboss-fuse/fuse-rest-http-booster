@@ -1,0 +1,52 @@
+schemaVersion: 2.1.0
+metadata:
+  name: apache-camel-springboot
+attributes:
+  che-theia.eclipse.org/sidecar-policy: USE_DEV_CONTAINER
+components:
+  - name: tools
+    container:
+      image: quay.io/devfile/universal-developer-image:ubi8-d433ed6
+      endpoints:
+        - exposure: none
+          name: debug
+          protocol: tcp
+          targetPort: 5005
+        - exposure: public
+          name: 8080-tcp
+          protocol: http
+          targetPort: 8080
+      volumeMounts:
+        - name: m2
+          path: /home/user/.m2
+      memoryLimit: 3Gi
+  - name: m2
+    volume:
+      size: 1G
+commands:
+  - id: build
+    exec:
+      component: tools
+      workingDir: ${PROJECTS_ROOT}/fuse-rest-http-booster
+      commandLine: mvn clean install
+      group:
+        kind: build
+        isDefault: true
+  - id: run
+    exec:
+      component: tools
+      workingDir: ${PROJECTS_ROOT}/fuse-rest-http-booster
+      commandLine: >-
+        java -jar target/*.jar
+      group:
+        kind: run
+        isDefault: true
+  - id: run-debug
+    exec:
+      component: tools
+      workingDir: ${PROJECTS_ROOT}/fuse-rest-http-booster
+      commandLine: >-
+        java -jar -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005 target/*.jar
+      group:
+        kind: run
+        isDefault: true
