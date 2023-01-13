@@ -99,7 +99,7 @@ objects:
         forcePull: true
         from:
           kind: ImageStreamTag
-          name: fuse-java-openshift:1.0
+          name: fuse-java-openshift:1.6
         incremental: true
       type: Source
     triggers:
@@ -169,7 +169,7 @@ objects:
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
-              path: /health
+              path: /actuator/health
               port: 8080
               scheme: HTTP
             initialDelaySeconds: 180
@@ -186,7 +186,7 @@ objects:
             protocol: TCP
           readinessProbe:
             httpGet:
-              path: /health
+              path: /actuator/health
               port: 8080
               scheme: HTTP
             initialDelaySeconds: 10
